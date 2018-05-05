@@ -22,120 +22,120 @@
 #------------------------------------------------------------------------------
 
 dec32_format:
-	.string "%d\n"
+    .string "%d\n"
 
 .section .text
 .globl main
 
 main:
-	call	find_sum
-	pushl	%eax
-	call	print32
+    call    find_sum
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor		%eax, %eax
-	incl	%eax
-	xor		%ebx, %ebx
-	int		$0x80
+    xor     %eax, %eax
+    incl    %eax
+    xor     %ebx, %ebx
+    int     $0x80
 
 #------------------------------------------------------------------------------
 .type print32, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format
-	call	printf
-	addl	$8, %esp
-	ret
+    pushl   4(%esp)
+    pushl   $dec32_format
+    call    printf
+    addl    $8, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type find_sum, @ function
 
 find_sum:
-	xor		%ebx, %ebx
-	xor		%edi, %edi
-	incl	%edi
+    xor     %ebx, %ebx
+    xor     %edi, %edi
+    incl    %edi
 
 fs_loop:
-	incl	%edi
-	cmpl	$1000000, %edi
-	jge		fs_exit
-	pushl	%ebx
-	pushl	%edi
-	call	sum_of_fifth_powers
-	popl	%edi
-	popl	%ebx
-	cmpl	%edi, %eax
-	jne		fs_loop
-	addl	%edi, %ebx
-	jmp		fs_loop
+    incl    %edi
+    cmpl    $1000000, %edi
+    jge     fs_exit
+    pushl   %ebx
+    pushl   %edi
+    call    sum_of_fifth_powers
+    popl    %edi
+    popl    %ebx
+    cmpl    %edi, %eax
+    jne     fs_loop
+    addl    %edi, %ebx
+    jmp     fs_loop
 
 fs_exit:
-	movl	%ebx, %eax
-	ret
+    movl    %ebx, %eax
+    ret
 
 #------------------------------------------------------------------------------
 .type sum_of_fifth_powers, @ function
 
 sum_of_fifth_powers:
-	xor		%ebx, %ebx
-	movl	$10, %ecx
-	movl	$1, %eax
+    xor     %ebx, %ebx
+    movl    $10, %ecx
+    movl    $1, %eax
 
 sofp_power_of_ten:
-	cmpl	4(%esp), %edi
-	jg		sofp_loop
-	mul		%ecx
-	movl	%eax, %edi
-	jmp		sofp_power_of_ten
+    cmpl    4(%esp), %edi
+    jg      sofp_loop
+    mul     %ecx
+    movl    %eax, %edi
+    jmp     sofp_power_of_ten
 
 sofp_loop:
-	movl	%edi, %eax
-	movl	$10, %ecx
-	xor		%edx, %edx
-	div		%ecx
-	movl	%eax, %edi
-	cmpl	$0, %edi
-	jle		sofp_exit
-	
-	movl	4(%esp), %eax
-	xor		%edx, %edx
-	div		%edi			# / 10
-	xor		%edx, %edx
-	div		%ecx			# % 10	
+    movl    %edi, %eax
+    movl    $10, %ecx
+    xor     %edx, %edx
+    div     %ecx
+    movl    %eax, %edi
+    cmpl    $0, %edi
+    jle     sofp_exit
+    
+    movl    4(%esp), %eax
+    xor     %edx, %edx
+    div     %edi            # / 10
+    xor     %edx, %edx
+    div     %ecx            # % 10    
 
-	pushl	%ebx
-	pushl	%edi
-	pushl	%edx			# digit
-	pushl	$5
-	call	power
-	addl	$4, %esp
-	popl	%edx
-	popl	%edi
-	popl	%ebx
+    pushl   %ebx
+    pushl   %edi
+    pushl   %edx            # digit
+    pushl   $5
+    call    power
+    addl    $4, %esp
+    popl    %edx
+    popl    %edi
+    popl    %ebx
 
-	addl	%eax, %ebx
-	jmp		sofp_loop
+    addl    %eax, %ebx
+    jmp     sofp_loop
 
 sofp_exit:
-	movl	%ebx, %eax
-	ret
+    movl    %ebx, %eax
+    ret
 
 #------------------------------------------------------------------------------
 .type power, @ function
 
 power:
-	movl	8(%esp), %ecx
-	movl	%ecx, %eax
-	movl	4(%esp), %edi
+    movl    8(%esp), %ecx
+    movl    %ecx, %eax
+    movl    4(%esp), %edi
 
 p_loop:
-	decl	%edi
-	cmpl	$0, %edi
-	je		p_exit
-	mul		%ecx
-	jmp		p_loop
+    decl    %edi
+    cmpl    $0, %edi
+    je      p_exit
+    mul     %ecx
+    jmp     p_loop
 
 p_exit:
-	ret
+    ret

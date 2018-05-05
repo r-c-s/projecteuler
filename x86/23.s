@@ -28,134 +28,134 @@
 #------------------------------------------------------------------------------
 
 dec32_format:
-	.string "%d\n"
+    .string "%d\n"
 
 .section .text
 .globl main
 
 main:
-	call	find_sum
-	pushl	%eax
-	call	print32
+    call    find_sum
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor		%eax, %eax
-	incl	%eax
-	xor		%ebx, %ebx
-	int		$0x80
+    xor    %eax, %eax
+    incl   %eax
+    xor    %ebx, %ebx
+    int    $0x80
 
 #------------------------------------------------------------------------------
 .type print32, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format
-	call	printf
-	addl	$8, %esp
-	ret
+    pushl   4(%esp)
+    pushl   $dec32_format
+    call    printf
+    addl    $8, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type find_sum, @ function
 
 find_sum:
-	xor		%edi, %edi
-	movl	%esp, %ebp
+    xor     %edi, %edi
+    movl    %esp, %ebp
 
-fs_abundant_nums_loop:				# generates an array of abundant numbers
-	incl	%edi
-	cmpl	$20161, %edi			
-	jg		fs_all_numbers
-	pushl	%edi	
-	call	is_abundant
-	popl	%edi
-	cmpl	$1, %eax
-	jne		fs_abundant_nums_loop
-	pushl	%edi	
-	jmp		fs_abundant_nums_loop
+fs_abundant_nums_loop:                # generates an array of abundant numbers
+    incl    %edi
+    cmpl    $20161, %edi            
+    jg      fs_all_numbers
+    pushl   %edi    
+    call    is_abundant
+    popl    %edi
+    cmpl    $1, %eax
+    jne     fs_abundant_nums_loop
+    pushl   %edi    
+    jmp     fs_abundant_nums_loop
 
-fs_all_numbers:						# generates an array of all numbers
-	xor		%edi, %edi
-	movl	%esp, %ecx
+fs_all_numbers:                        # generates an array of all numbers
+    xor     %edi, %edi
+    movl    %esp, %ecx
 
 fs_all_numbers_loop:
-	incl	%edi
-	pushl	%edi
-	cmpl	$20161, %edi			# 20161 is the greatest number that cannot be 
-	jl		fs_all_numbers_loop		# written as the sum of two abundant numbers
+    incl    %edi
+    pushl   %edi
+    cmpl    $20161, %edi               # 20161 is the greatest number that cannot be 
+    jl      fs_all_numbers_loop        # written as the sum of two abundant numbers
 
-fs_sum_of_two_abundant_numbers:		# all possible sums of two abundant numbers
-	movl	%ecx, %esp
-	movl	%ebp, %ecx
-	movl	$4, %ebx
+fs_sum_of_two_abundant_numbers:        # all possible sums of two abundant numbers
+    movl    %ecx, %esp
+    movl    %ebp, %ecx
+    movl    $4, %ebx
 
-fs_sotan_loop:						# plucks out the numbers that can be
-	cmpl	%ebp, %esp				# be written as the sum of two abundant numbers
-	je		fs_total				# from the array of all numbers
-	addl	$-4, %ebp
-	movl	%ebp, %edi
+fs_sotan_loop:                         # plucks out the numbers that can be
+    cmpl    %ebp, %esp                 # be written as the sum of two abundant numbers
+    je      fs_total                   # from the array of all numbers
+    addl    $-4, %ebp
+    movl    %ebp, %edi
 
 fs_sotan_inner_loop:
-	xor		%eax, %eax
-	addl	(%ebp), %eax
-	addl	(%edi), %eax
-	cmpl	$20161, %eax			# we're only dealing with numbers below 20161
-	jg		fs_sotan_loop
-	mul		%ebx
+    xor     %eax, %eax
+    addl    (%ebp), %eax
+    addl    (%edi), %eax
+    cmpl    $20161, %eax               # we're only dealing with numbers below 20161
+    jg      fs_sotan_loop
+    mul     %ebx
 
-	subl	%eax, %esp
-	movl	$0, (%esp)				# sets those numbers to 0 so they don't count in the sum
-	addl	%eax, %esp
+    subl    %eax, %esp
+    movl    $0, (%esp)                 # sets those numbers to 0 so they don't count in the sum
+    addl    %eax, %esp
 
-	cmpl	%edi, %esp
-	je		fs_sotan_loop
-	addl	$-4, %edi
-	jmp		fs_sotan_inner_loop
+    cmpl    %edi, %esp
+    je      fs_sotan_loop
+    addl    $-4, %edi
+    jmp     fs_sotan_inner_loop
 
 fs_total:
-	xor		%eax, %eax
+    xor     %eax, %eax
 
-fs_total_loop:						# sums up the leftover numbers
-	addl	$-4, %esp
-	addl	(%esp), %eax
-	cmpl	$20161, (%esp)
-	jl		fs_total_loop
+fs_total_loop:                         # sums up the leftover numbers
+    addl    $-4, %esp
+    addl    (%esp), %eax
+    cmpl    $20161, (%esp)
+    jl      fs_total_loop
 
 fs_exit:
-	movl	%ecx, %ebp
-	movl	%ebp, %esp
-	ret
+    movl    %ecx, %ebp
+    movl    %ebp, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type is_abundant, @ function
 
 is_abundant:
-	xor		%edi, %edi
-	xor		%ecx, %ecx
-	movl	4(%esp), %ebx
-	shr		$1, %ebx
+    xor     %edi, %edi
+    xor     %ecx, %ecx
+    movl    4(%esp), %ebx
+    shr     $1, %ebx
 
 ia_loop:
-	incl	%edi
-	cmpl	%ebx, %edi
-	jg		ia_no
-	xor		%edx, %edx
-	movl	4(%esp), %eax
-	div		%edi
-	cmpl	$0, %edx
-	jne		ia_loop
-	addl	%edi, %ecx
-	cmpl	4(%esp), %ecx
-	jg		ia_yes
-	jmp		ia_loop
+    incl    %edi
+    cmpl    %ebx, %edi
+    jg      ia_no
+    xor     %edx, %edx
+    movl    4(%esp), %eax
+    div     %edi
+    cmpl    $0, %edx
+    jne     ia_loop
+    addl    %edi, %ecx
+    cmpl    4(%esp), %ecx
+    jg      ia_yes
+    jmp     ia_loop
 
 ia_yes:
-	xor		%eax, %eax
-	incl	%eax
-	jmp		ia_exit
+    xor     %eax, %eax
+    incl    %eax
+    jmp     ia_exit
 
 ia_no:
-	xor		%eax, %eax
+    xor     %eax, %eax
 
 ia_exit:
-	ret
+    ret

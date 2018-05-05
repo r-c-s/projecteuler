@@ -67,44 +67,44 @@ fsodif_main_loop:
     xor     %ecx, %ecx
 
 fsodif_multiply_loop:
-    cmpl    $-1, (%ebp)           # check for flag
-    jne     fsodif_ml_continue    # no flag yet, multiply again
-    cmpl    $0, %ecx              # else check if there's a carry
-    je      fsodif_main_loop      # no carry, back to main loop
-    movl    %ecx, %eax            # yes carry, need to propagate it
+    cmpl   $-1, (%ebp)           # check for flag
+    jne    fsodif_ml_continue    # no flag yet, multiply again
+    cmpl   $0, %ecx              # else check if there's a carry
+    je     fsodif_main_loop      # no carry, back to main loop
+    movl   %ecx, %eax            # yes carry, need to propagate it
 
-fsodif_ml_propagate_carry:             # pushes each digit of carry
-    xor     %edx, %edx                 # to the next stack location
-    div     %ebx                       # gets carry in eax
-    movl    %edx, (%ebp)               # move remainder to current location
-    addl    $-4, %ebp                  # move to the next adress
-    cmpl    $0, %eax                   # is there still a carry?
-    jne     fsodif_ml_propagate_carry  # then do it again
-    movl    $-1, (%ebp)                # else push flag back in before leaving
-    jmp     fsodif_main_loop 
+fsodif_ml_propagate_carry:            # pushes each digit of carry
+    xor    %edx, %edx                 # to the next stack location
+    div    %ebx                       # gets carry in eax
+    movl   %edx, (%ebp)               # move remainder to current location
+    addl   $-4, %ebp                  # move to the next adress
+    cmpl   $0, %eax                   # is there still a carry?
+    jne    fsodif_ml_propagate_carry  # then do it again
+    movl   $-1, (%ebp)                # else push flag back in before leaving
+    jmp    fsodif_main_loop 
 
 fsodif_ml_continue:
-    movl    (%ebp), %eax          # gets current value in stack address
-    mul     %edi                  # multiply it by factorial (n..1)
-    addl    %ecx, %eax            # carry from previous multiplication
-    div     %ebx                  # get only 1 digit
-    movl    %edx, (%ebp)          # move that digit to current stack address
-    movl    %eax, %ecx            # ecx holds the current carry
-    addl    $-4, %ebp             # shift go to next stack
-    jmp     fsodif_multiply_loop  # go back to multiply loop
+    movl   (%ebp), %eax          # gets current value in stack address
+    mul    %edi                  # multiply it by factorial (n..1)
+    addl   %ecx, %eax            # carry from previous multiplication
+    div    %ebx                  # get only 1 digit
+    movl   %edx, (%ebp)          # move that digit to current stack address
+    movl   %eax, %ecx            # ecx holds the current carry
+    addl   $-4, %ebp             # shift go to next stack
+    jmp    fsodif_multiply_loop  # go back to multiply loop
 
 fsodif_done: 
-    xor     %eax, %eax          # sum
-    movl    %esp, %ebp          # copy of stack pointer - start at beginning
+    xor    %eax, %eax          # sum
+    movl   %esp, %ebp          # copy of stack pointer - start at beginning
 
 fsodif_add:    
-    cmpl    $-1, (%ebp)         # check for flag
-    je      fsodif_exit         # if we've arrived at the flag, we're done
-    addl    (%ebp), %eax        # else add
-    addl    $-4, %ebp           # move to the next stack address
-    jmp     fsodif_add          # do it again
+    cmpl   $-1, (%ebp)         # check for flag
+    je     fsodif_exit         # if we've arrived at the flag, we're done
+    addl   (%ebp), %eax        # else add
+    addl   $-4, %ebp           # move to the next stack address
+    jmp    fsodif_add          # do it again
 
 fsodif_exit:
-    addl    $4, %esp            # restore stack pointer
-    popl    %ebp                # restore base pointer
+    addl   $4, %esp            # restore stack pointer
+    popl   %ebp                # restore base pointer
     ret

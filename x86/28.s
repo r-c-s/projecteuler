@@ -23,56 +23,56 @@
 #------------------------------------------------------------------------------
 
 dec32_format_unsigned:
-	.string "%u\n"
+    .string "%u\n"
 
 .section .text
 .globl main
 
 main:
-	call	find_sum
-	pushl	%eax
-	call	print32
+    call    find_sum
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor		%eax, %eax
-	incl	%eax
-	xor		%ebx, %ebx
-	int		$0x80
+    xor     %eax, %eax
+    incl    %eax
+    xor     %ebx, %ebx
+    int     $0x80
 
 #------------------------------------------------------------------------------
 .type print32, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format_unsigned
-	call	printf
-	addl	$8, %esp
-	ret
+    pushl   4(%esp)
+    pushl   $dec32_format_unsigned
+    call    printf
+    addl    $8, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type find_sum, @ function
 
 find_sum:
-	xor		%edi, %edi
-	addl	$1, %edi
-	xor		%ebx, %ebx		# step
-	xor		%eax, %eax		# sum
-	incl	%eax
+    xor     %edi, %edi
+    addl    $1, %edi
+    xor     %ebx, %ebx        # step
+    xor     %eax, %eax        # sum
+    incl    %eax
 
 fs_loop:
-	cmpl	$1002001, %edi
-	jge		fs_exit
-	addl	$2, %ebx
-	xor		%ecx, %ecx
-	
+    cmpl    $1002001, %edi
+    jge     fs_exit
+    addl    $2, %ebx
+    xor     %ecx, %ecx
+    
 fs_inner_loop:
-	cmpl	$4, %ecx
-	je		fs_loop
-	addl	%ebx, %edi
-	addl	%edi, %eax
-	incl	%ecx
-	jmp		fs_inner_loop	
+    cmpl    $4, %ecx
+    je      fs_loop
+    addl    %ebx, %edi
+    addl    %edi, %eax
+    incl    %ecx
+    jmp     fs_inner_loop    
 
 fs_exit:
-	ret
+    ret

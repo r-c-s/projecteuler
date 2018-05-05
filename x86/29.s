@@ -23,137 +23,120 @@
 #------------------------------------------------------------------------------
 
 dec32_format:
-	.string "%d\n"
+    .string "%d\n"
 
 .section .text
 .globl main
 
 main:
-	call	find_num
-	pushl	%eax
-	call	print32
+    call    find_num
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor		%eax, %eax
-	incl	%eax
-	xor		%ebx, %ebx
-	int		$0x80
+    xor     %eax, %eax
+    incl    %eax
+    xor     %ebx, %ebx
+    int     $0x80
 
 #------------------------------------------------------------------------------
 .type print32, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format
-	call	printf
-	addl	$8, %esp
-	ret
-
+    pushl   4(%esp)
+    pushl   $dec32_format
+    call    printf
+    addl    $8, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type find_num, @ function
 
 find_num:
-	movl	%esp, %ecx
-	xor		%edx, %edx
-	xor		%edi, %edi
-	incl	%edi
-	
+    movl    %esp, %ecx
+    xor     %edx, %edx
+    xor     %edi, %edi
+    incl    %edi
+    
 fn_loop:
-	cmpl	$5, %edi
-	je		fn_exit
-	incl	%edi
-	xor		%ebx, %ebx
-	incl	%ebx
+    cmpl    $5, %edi
+    je      fn_exit
+    incl    %edi
+    xor     %ebx, %ebx
+    incl    %ebx
 
 fn_inner_loop:
-	cmpl	$5, %ebx
-	je		fn_loop
-	incl	%ebx
-	pushl	%edx
-	pushl	%ecx
-	pushl	%edi
-	pushl	%ebx
-	call	power
-	popl	%ebx
-	popl	%edi
-	popl	%ecx
-	popl	%edx
-	pushl	%edx
-	pushl	%edi
-	pushl	%ebx
-	pushl	%eax
-	pushl	%ecx
-	call	already_in
-	cmpl	$1, %eax
-	popl	%ecx
-	popl	%eax
-	popl	%ebx
-	popl	%edi
-	popl	%edx
-	je		fn_inner_loop
-	pushl	%eax
-	incl	%edx
-	jmp		fn_inner_loop
+    cmpl    $5, %ebx
+    je      fn_loop
+    incl    %ebx
+    pushl   %edx
+    pushl   %ecx
+    pushl   %edi
+    pushl   %ebx
+    call    power
+    popl    %ebx
+    popl    %edi
+    popl    %ecx
+    popl    %edx
+    pushl   %edx
+    pushl   %edi
+    pushl   %ebx
+    pushl   %eax
+    pushl   %ecx
+    call    already_in
+    cmpl    $1, %eax
+    popl    %ecx
+    popl    %eax
+    popl    %ebx
+    popl    %edi
+    popl    %edx
+    je      fn_inner_loop
+    pushl   %eax
+    incl    %edx
+    jmp     fn_inner_loop
 
 fn_exit:
-	movl	%edx, %eax
-	movl	%ecx, %esp
-	ret
+    movl    %edx, %eax
+    movl    %ecx, %esp
+    ret
 
 
 #------------------------------------------------------------------------------
 .type already_in, @ function
 
 already_in:
-	xor		%eax, %eax
-	movl	8(%esp), %ebx
-	movl	4(%esp), %ecx
-	movl	%esp, %edx
-	addl	$8, %edx
+    xor     %eax, %eax
+    movl    8(%esp), %ebx
+    movl    4(%esp), %ecx
+    movl    %esp, %edx
+    addl    $8, %edx
 
 ai_loop:
-	addl	$-4, %ecx
-	cmpl	%ecx, %edx
-	je		ai_exit
-	cmpl	(%ecx), %ebx
-	jne		ai_loop
-	addl	$1, %eax
+    addl    $-4, %ecx
+    cmpl    %ecx, %edx
+    je      ai_exit
+    cmpl    (%ecx), %ebx
+    jne     ai_loop
+    addl    $1, %eax
 
 ai_exit:
-	ret
+    ret
 
 #------------------------------------------------------------------------------
 .type power, @ function
 
 power:
-	movl	8(%esp), %ecx
-	movl	%ecx, %eax
-	movl	4(%esp), %edi
+    movl    8(%esp), %ecx
+    movl    %ecx, %eax
+    movl    4(%esp), %edi
 
 p_loop:
-	decl	%edi
-	cmpl	$0, %edi
-	je		p_exit
-	mul		%ecx
-	jmp		p_loop
+    decl    %edi
+    cmpl    $0, %edi
+    je      p_exit
+    mul     %ecx
+    jmp     p_loop
 
 p_exit:
-	ret
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ret

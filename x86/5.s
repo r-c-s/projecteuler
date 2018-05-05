@@ -15,77 +15,77 @@
 #------------------------------------------------------------------------------
 
 dec32_format:
-	.string "%d\n"
+    .string "%d\n"
 
 .section .text
 .globl main
 
-main:	
-	call	find_number
-	pushl	%eax
-	call	print32
+main:    
+    call    find_number
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor		%eax, %eax
-	incl	%eax
-	xor		%ebx, %ebx
-	incl	%ebx
-	int 	$0x80
+    xor     %eax, %eax
+    incl    %eax
+    xor     %ebx, %ebx
+    incl    %ebx
+    int     $0x80
 
 #------------------------------------------------------------------------------
 .type print_num, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format
-	call	printf
-	addl	$8, %esp
-	ret
+    pushl   4(%esp)
+    pushl   $dec32_format
+    call    printf
+    addl    $8, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type find_number, @ function
 
 find_number:
-	xor		%edi, %edi
+    xor     %edi, %edi
 
 fn_loop:
-	addl	$20, %edi
-	pushl	%edi
-	call	is_divisible
-	popl	%edi
-	test	%eax, %eax
-	jz		fn_loop
+    addl    $20, %edi
+    pushl   %edi
+    call    is_divisible
+    popl    %edi
+    test    %eax, %eax
+    jz      fn_loop
 
 fn_exit:
-	movl	%edi, %eax
-	ret
+    movl    %edi, %eax
+    ret
 
 #------------------------------------------------------------------------------
 .type is_divisible, @ function
 
 is_divisible:
-	xor		%edi, %edi
-	movl	$20, %edi
+    xor     %edi, %edi
+    movl    $20, %edi
 
 id_loop:
-	cmpl	$1, %edi
-	je		id_yes
-	xor		%edx, %edx
-	movl	4(%esp), %eax
-	div		%edi
-	cmpl	$0, %edx
-	jne		id_no
-	decl	%edi
-	jmp		id_loop
+    cmpl    $1, %edi
+    je      id_yes
+    xor     %edx, %edx
+    movl    4(%esp), %eax
+    div     %edi
+    cmpl    $0, %edx
+    jne     id_no
+    decl    %edi
+    jmp     id_loop
 
 id_yes:
-	xor		%eax, %eax
-	incl	%eax
-	jmp 	id_exit
+    xor     %eax, %eax
+    incl    %eax
+    jmp     id_exit
 
 id_no:
-	xor		%eax, %eax
+    xor     %eax, %eax
 
 id_exit:
-	ret
+    ret

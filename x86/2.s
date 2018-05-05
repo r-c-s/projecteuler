@@ -25,53 +25,53 @@ dec32_format:
 .globl main
 
 main:
-	pushl	$4000000
-	call	find_sum
-	pushl	%eax
-	call	print32
+    pushl   $4000000
+    call    find_sum
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor		%eax, %eax
-	incl	%eax
-	xor		%ebx, %ebx
-	incl	%ebx
-	int 	$0x80
+    xor     %eax, %eax
+    incl    %eax
+    xor     %ebx, %ebx
+    incl    %ebx
+    int     $0x80
 
 #------------------------------------------------------------------------------
 .type print32, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format
-	call	printf
-	addl	$8, %esp
-	ret		
+    pushl   4(%esp)
+    pushl   $dec32_format
+    call    printf
+    addl    $8, %esp
+    ret        
 
 #------------------------------------------------------------------------------
 .type find_sum, @ function
 
 find_sum:
-	movl	4(%esp), %edi
-	xor		%eax, %eax
-	xor		%ebx, %ebx
-	xor		%ecx, %ecx
-	xor		%edx, %edx
-	incl	%edx
+    movl    4(%esp), %edi
+    xor     %eax, %eax
+    xor     %ebx, %ebx
+    xor     %ecx, %ecx
+    xor     %edx, %edx
+    incl    %edx
 
 find_sum_loop:
-	movl	%ecx, %ebx
-	movl	%edx, %ecx
-	addl	%ebx, %edx
-	cmpl	%edi, %edx
-	ja		find_sum_exit
-	pushl	%edx
-	and		$1, %edx
-	popl	%edx
-	jne		find_sum_loop
-	addl	%edx, %eax
-	call	find_sum_loop
+    movl    %ecx, %ebx
+    movl    %edx, %ecx
+    addl    %ebx, %edx
+    cmpl    %edi, %edx
+    ja      find_sum_exit
+    pushl   %edx
+    and     $1, %edx
+    popl    %edx
+    jne     find_sum_loop
+    addl    %edx, %eax
+    call    find_sum_loop
 
 find_sum_exit:
-	addl	$4, %esp
-	ret
+    addl    $4, %esp
+    ret

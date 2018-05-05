@@ -21,63 +21,63 @@ dec32_format:
 .globl main
 
 main:
-	pushl	$1000
-	pushl	$3
-	pushl	$5
-	call	get_sum
-	pushl	%eax
-	call	print32
+    pushl   $1000
+    pushl   $3
+    pushl   $5
+    call    get_sum
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor		%eax, %eax
-	incl	%eax
-	xor		%ebx, %ebx
-	incl	%ebx
-	int 	$0x80
+    xor     %eax, %eax
+    incl    %eax
+    xor     %ebx, %ebx
+    incl    %ebx
+    int     $0x80
 
 #------------------------------------------------------------------------------
 .type print_num, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format
-	call	printf
-	addl	$8, %esp
-	ret
+    pushl   4(%esp)
+    pushl   $dec32_format
+    call    printf
+    addl    $8, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type get_sum, @ function
 
 get_sum:
-	xor		%ebx, %ebx
-	xor		%edi, %edi
-	incl	%edi
+    xor     %ebx, %ebx
+    xor     %edi, %edi
+    incl    %edi
 
 sum_loop:
-	incl	%edi
-	cmpl	12(%esp), %edi
-	je		sum_exit	
-	xor		%edx, %edx		
-	movl	%edi, %eax	
-	movl	8(%esp), %ecx	
-	divl	%ecx		
-	test	%edx, %edx
-	jne		skip
-	addl	%edi, %ebx
-	jmp 	sum_loop
+    incl    %edi
+    cmpl    12(%esp), %edi
+    je      sum_exit    
+    xor     %edx, %edx        
+    movl    %edi, %eax    
+    movl    8(%esp), %ecx    
+    divl    %ecx        
+    test    %edx, %edx
+    jne     skip
+    addl    %edi, %ebx
+    jmp     sum_loop
 
 skip:
-	xor		%edx, %edx		
-	movl	%edi, %eax	
-	movl	4(%esp), %ecx	
-	divl	%ecx	
-	test	%edx, %edx
-	jne		sum_loop
-	addl	%edi, %ebx	
-	jmp 	sum_loop
+    xor     %edx, %edx        
+    movl    %edi, %eax    
+    movl    4(%esp), %ecx    
+    divl    %ecx    
+    test    %edx, %edx
+    jne     sum_loop
+    addl    %edi, %ebx    
+    jmp     sum_loop
 
 sum_exit:
-	movl	%ebx, %eax
-	ret
-	
+    movl    %ebx, %eax
+    ret
+    

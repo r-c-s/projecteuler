@@ -21,53 +21,53 @@
 #------------------------------------------------------------------------------
 
 dec32_format:
-	.string "%d\n"
+    .string "%d\n"
 
 .section .text
 .globl main
 
 main:
-	call	get_number
-	pushl	%eax
-	call	print32
+    call    get_number
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor	%eax, %eax
-	incl	%eax
-	xor	%ebx, %ebx
-	int	$0x80
+    xor     %eax, %eax
+    incl    %eax
+    xor     %ebx, %ebx
+    int     $0x80
 
 #------------------------------------------------------------------------------
 .type print32, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format
-	call	printf
-	addl	$8, %esp
-	ret
+    pushl   4(%esp)
+    pushl   $dec32_format
+    call    printf
+    addl    $8, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type get_number, @ function
 
 get_number:
-	xor	%edi, %edi
-	xor	%ebx, %ebx
-	xor	%ecx, %ecx
-	
+    xor     %edi, %edi
+    xor     %ebx, %ebx
+    xor     %ecx, %ecx
+    
 gn_loop:
-	cmpl	$100, %edi
-	je	gn_exit
-	inc	%edi		
-	movl	%edi, %eax	# sum of squares
-	mul	%eax
-	addl	%eax, %ebx
-	addl	%edi, %ecx	# sum
-	jmp	gn_loop
+    cmpl    $100, %edi
+    je      gn_exit
+    inc     %edi        
+    movl    %edi, %eax    # sum of squares
+    mul     %eax
+    addl    %eax, %ebx
+    addl    %edi, %ecx    # sum
+    jmp     gn_loop
 
 gn_exit:
-	movl	%ecx, %eax
-	mul	%eax
-	subl	%ebx, %eax
-	ret
+    movl    %ecx, %eax
+    mul     %eax
+    subl    %ebx, %eax
+    ret

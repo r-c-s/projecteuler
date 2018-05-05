@@ -29,109 +29,109 @@
 #------------------------------------------------------------------------------
 
 dec32_format:
-	.string "%d\n"
+    .string "%d\n"
 
 .section .text
 .globl main
 
 main:
-	call	find_num
-	pushl	%eax
-	call	print32
+    call    find_num
+    pushl   %eax
+    call    print32
 
 #------------------------------------------------------------------------------
 main_exit:
-	xor		%eax, %eax
-	incl	%eax
-	xor		%ebx, %ebx
-	int		$0x80
+    xor     %eax, %eax
+    incl    %eax
+    xor     %ebx, %ebx
+    int     $0x80
 
 #------------------------------------------------------------------------------
 .type print32, @ function
 
 print32:
-	pushl	4(%esp)
-	pushl	$dec32_format
-	call	printf
-	addl	$8, %esp
-	ret
+    pushl   4(%esp)
+    pushl   $dec32_format
+    call    printf
+    addl    $8, %esp
+    ret
 
 #------------------------------------------------------------------------------
 .type find_num, @ function
 
 find_num:
-	xor		%edi, %edi
-	xor		%ecx, %ecx
+    xor     %edi, %edi
+    xor     %ecx, %ecx
 
 fn_loop:
-	incl	%edi
-	addl	%edi, %ecx
-	pushl	%edi
-	pushl	%ecx
-	call	number_of_divisors
-	popl	%ecx
-	popl	%edi
-	cmpl	$500, %eax
-	jl		fn_loop
-	
+    incl    %edi
+    addl    %edi, %ecx
+    pushl   %edi
+    pushl   %ecx
+    call    number_of_divisors
+    popl    %ecx
+    popl    %edi
+    cmpl    $500, %eax
+    jl      fn_loop
+    
 fn_exit:
-	movl	%ecx, %eax
-	ret		
+    movl    %ecx, %eax
+    ret        
 
 #------------------------------------------------------------------------------
 .type number_of_divisors, @ function
 
 number_of_divisors:
-	movl	4(%esp), %ebx
-	pushl	$0
-	pushl	%ebx
-	call	sqrt_approx
-	popl	%ebx
-	popl	%ecx
-	movl	%eax, %ecx
-	xor		%edx, %edx
-	movl	$2, %edx		# 1 and itself
-	xor		%edi, %edi
-	movl	$1, %edi
-	
+    movl    4(%esp), %ebx
+    pushl   $0
+    pushl   %ebx
+    call    sqrt_approx
+    popl    %ebx
+    popl    %ecx
+    movl    %eax, %ecx
+    xor     %edx, %edx
+    movl    $2, %edx        # 1 and itself
+    xor     %edi, %edi
+    movl    $1, %edi
+    
 nod_loop:
-	incl	%edi
-	cmpl	%ecx, %edi
-	jge		nod_exit
-	pushl	%edx
-	xor		%edx, %edx
-	movl	%ebx, %eax
-	divl	%edi
-	cmpl	$0, %edx
-	popl	%edx
-	jne		nod_loop
-	addl	$2, %edx
-	jmp		nod_loop
+    incl    %edi
+    cmpl    %ecx, %edi
+    jge     nod_exit
+    pushl   %edx
+    xor     %edx, %edx
+    movl    %ebx, %eax
+    divl    %edi
+    cmpl    $0, %edx
+    popl    %edx
+    jne     nod_loop
+    addl    $2, %edx
+    jmp     nod_loop
 
 nod_exit:
-	movl	%edx, %eax
-	ret
+    movl    %edx, %eax
+    ret
 
 #------------------------------------------------------------------------------
 .type sqrt_approx, @function
 
 sqrt_approx:
-	xor		%edx, %edx
-	xor		%edi, %edi		
-	incl	%edi
+    xor     %edx, %edx
+    xor     %edi, %edi        
+    incl    %edi
 
 sqrt_loop:
-	movl	%edi, %eax		 
-	mul		%eax		
-	cmpl	8(%esp), %edx 
-	jl		continue		
-	cmpl	4(%esp), %eax
-	jge		sqrt_exit	
+    movl    %edi, %eax         
+    mul     %eax        
+    cmpl    8(%esp), %edx 
+    jl      continue        
+    cmpl    4(%esp), %eax
+    jge     sqrt_exit    
 
 continue:
-	incl	%edi	
-	jmp		sqrt_loop
+    incl    %edi    
+    jmp     sqrt_loop
 
 sqrt_exit:
-	movl	%edi, %eax	
-	ret
+    movl    %edi, %eax    
+    ret
